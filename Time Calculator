@@ -1,0 +1,88 @@
+import re
+import math
+
+
+def add_time(x, y, z="monday"):
+    Days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    # Checking if starting day is a default value
+    try:
+        i = Days.index(z)
+
+    except ValueError:
+        print("Starting day is monday")
+        i = 0
+    # Separating hours and minutes
+    g = re.search("\d+\W+\d+", x)
+    g = g.group().rsplit(":")
+
+    r = re.search("\d+\W+\d+", y)
+    r = r.group().rsplit(":")
+    # Check if its PM to convert hours
+    try:
+        x.index("PM")
+        g[0] = int(g[0])+12
+        print("It is", x)
+
+    except:
+        print("Starting time is {} and today is {}.We are adding {} hours and minutes".format(x, z, y))
+    # Start is our current time, added ist he time we are adding
+    Start = int(g[0]) * 60 + int(g[1])
+
+    Added = int(r[0]) * 60 + int(r[1])
+    Total = int(Start)+int(Added)
+    Time = Total/60
+    Hours = int(Time // 1)
+    Minutes = Total % 60
+    # Formating 1 minute into 01 min
+    if Minutes < 10:
+        Minutes = format(Minutes, '02')
+
+    # Checking if its a new day
+    if (Total >= 1440):
+        # Checking how many days will pass
+        i = i + int((Total/1440))
+        Leftover = (Total - 1440)/60
+        Hours = int(Leftover) - ((i-7)*24)
+        Minutes = (Total - 1440) % 60
+        # Days passed counter
+        Passed = i - 6
+        # Looping days/weeks
+        while i >= 6:
+
+            i = i - 7
+
+        if Minutes < 10:
+            Minutes = format(Minutes, "02")
+
+        # If its AM
+        if Leftover < 12:
+
+            print("It is a new day! Today is {} and it is {}:{} AM. {} days has passed".format(
+                Days[i], Hours, Minutes, Passed))
+        # If its PM and converting 14:00pm to 2:00PM
+        else:
+
+            #Hours = Hours - 12
+            # if Hours < 1:
+            #    Hours = 12
+            # print("It is a new day! Today is {} and it is {}:{} PM. {} days has passed".format(
+            #    Days[i], Hours, Minutes, Passed))
+
+            Hours = 12 if Hours - 12 < 1 else Hours == Hours - 12
+            print("It is a new day! Today is {} and it is {}:{} PM. {} days has passed".format(
+                Days[i], Hours, Minutes, Passed))
+
+    # If its AM
+    elif(Total < 720):
+
+        print("Today is {} and it is {}:{} AM".format(
+            Days[i], Hours, Minutes))
+    # If its PM and converting 16:00pm to 4:00pm
+    elif(Total >= 720):
+        # 00:00pm into 12:00 PM
+        Hours = 12 if 720 <= Total <= 779 else Hours - 12
+        print("Today is {} and it is {}:{} PM".format(
+            Days[i], Hours, Minutes))
+
+
+add_time("11:09 AM", "1:51", "sunday")
